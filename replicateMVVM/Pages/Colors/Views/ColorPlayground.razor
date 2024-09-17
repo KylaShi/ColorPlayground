@@ -1,0 +1,117 @@
+﻿@attribute [Route("/Playground")]
+@using MudBlazor
+@using replicateMVVM.Pages.Colors.Models
+@using replicateMVVM.Pages.Colors.ViewModels
+@inject ColorListViewModel ColorListViewModel
+@inject NavigationManager NavigationManager
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<h3>ColorPlayground</h3>
+
+<MudContainer Style="width: 100%; padding: 10px;">
+    <MudGrid Spacing="0" GutterBottom="false" Style="max-width: 60%; margin: 0 auto;">
+        <!-- Center the grid -->
+        @foreach (var colour in ColorListViewModel.Colours)
+        {
+            var buttonStyle = "width: 100%; height: 100%;";
+            var borderStyle = "border: 2px solid darkgray;";
+
+            var backgroundColorStyle1 = $"background-color: {colour.HexCode}; {buttonStyle}";
+            var backgroundColorStyle2 = $"background-color: {colour.HexCode2}; {buttonStyle}";
+            var backgroundColorStyle3 = $"background-color: {colour.HexCode3}; {buttonStyle}";
+
+            
+            <MudItem xs="6" sm="4" md="2">
+                
+                <MudButton Style="@($"{backgroundColorStyle1} {borderStyle}")" @onclick="@( () => SelectColor(colour.HexCode) )">
+                    <MudText Style="color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">
+                        @colour.HexCode
+                    </MudText>
+                </MudButton>
+            </MudItem>
+
+            
+            <MudItem xs="6" sm="4" md="2">
+                <MudButton Style="@($"{backgroundColorStyle2} {borderStyle}")" @onclick="@( () => SelectColor(colour.HexCode2) )">
+                    <MudText Style="color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">
+                        @colour.HexCode2
+                    </MudText>
+                </MudButton>
+            </MudItem>
+
+            
+            <MudItem xs="6" sm="4" md="2">
+                <MudButton Style="@($"{backgroundColorStyle3} {borderStyle}")" @onclick="@( () => SelectColor(colour.HexCode3) )">
+                    <MudText Style="color: white; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">
+                        @colour.HexCode3
+                    </MudText>
+                </MudButton>
+            </MudItem>
+        }
+    </MudGrid>
+</MudContainer>
+
+<MudContainer Style="display: flex; justify-content: center; align-items: center; padding: 16px;">
+
+    <MudIconButton @onclick = "() => SetSize(5)" Icon="@Icons.Material.Filled.Circle" aria-label="brush size" Size="Size.Small" />
+    <MudIconButton @onclick = "() => SetSize (15)" Icon="@Icons.Material.Filled.Circle" aria-label="brush size" Size="Size.Medium" />
+    <MudIconButton @onclick = "() => SetSize (25)"Icon="@Icons.Material.Filled.Circle" aria-label="brush size" Size="Size.Large" />
+
+</MudContainer>
+
+<MudContainer Style="display: flex; justify-content: center; align-items: center; padding: 16px;">
+    <MudButton Style="margin-right:10px;" Variant=" Variant.Filled" @onclick="GoBack">Go Back</MudButton>
+    <MudButton Variant="Variant.Filled"  @onclick="ClearCanvas">Clear</MudButton>
+</MudContainer>
+
+<MudContainer Style="display: flex; justify-content: center; align-items: center; padding: 20px;">
+    <canvas id="paintCanvas" width="800" height="600" style="border:1px solid #000000;"></canvas>
+</MudContainer>
+
+
+
+
+
+
+
+
+
+@code {
+
+    private string selectedColor ="#000000";
+    private int brushSize = 5;
+    public void GoBack()
+    {
+        NavigationManager.NavigateTo("/colours");
+
+    }
+
+    private void SelectColor (string color)
+    {
+        selectedColor = color;
+        JSRuntime.InvokeVoidAsync("setBrushColor", selectedColor);
+    }
+
+    private void SetSize(int size)
+    {
+        brushSize = size;
+        JSRuntime.InvokeVoidAsync("setBrushSize", brushSize);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("initializeCanvas", "paintCanvas");
+        }
+    }
+
+    private async Task ClearCanvas()
+    {
+        await JSRuntime.InvokeVoidAsync("clearCanvas", "paintCanvas");
+    }
+
+
+
+}

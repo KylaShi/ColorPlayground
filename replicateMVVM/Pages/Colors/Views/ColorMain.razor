@@ -1,0 +1,30 @@
+﻿@attribute [Route("/colours")]
+@using replicateMVVM.Pages.Colors.Models
+@using replicateMVVM.Pages.Colors.ViewModels
+@inject ColorListViewModel ColorListViewModel
+@inject ColorActionViewModel ColorActionViewModel
+
+<ColorList Colours="ColorListViewModel.Colours"
+CreateColorAction="CreateColor"
+UpdateColorAction="(colour) => UpdateColor(colour)">
+</ColorList>
+
+@code {
+
+	protected override Task OnInitializedAsync()
+	{
+		return base.OnInitializedAsync();
+	}
+
+	private void CreateColor()
+	{
+		ColorActionViewModel.CreateColor();	
+	}
+
+	private void UpdateColor(Colour colour)
+	{
+		ColorActionViewModel.UpdateColor(colour);
+	}
+
+
+}

@@ -1,0 +1,39 @@
+﻿@using MudBlazor
+@using replicateMVVM.Pages.Colors.Models
+@using replicateMVVM.Pages.Colors.ViewModels
+@using MudBlazor.Utilities
+@inject NavigationManager NavigationManager
+@inject ColorListViewModel ColorListViewModel
+@inject ColorFormViewModel ColorFormViewModel
+
+@attribute [Route("colours/create")]
+@attribute [Route("colours/update")]
+
+<MudTextField @bind-Value="ColorFormViewModel.Colour.Name" Label="Palette Name" Variant="Variant.Outlined"></MudTextField>
+
+<MudColorPicker Label="Basic Color Picker" @bind-Text="ColorFormViewModel.Colour.HexCode" Style="@($"color: {ColorFormViewModel.Colour.HexCode3};")" Placeholder="Select Color" />
+<MudColorPicker Label="Basic Color Picker" @bind-Text="ColorFormViewModel.Colour.HexCode2" Style="@($"color: {ColorFormViewModel.Colour.HexCode3};")" Placeholder="Select Color" />
+<MudColorPicker Label="Basic Color Picker" @bind-Text="ColorFormViewModel.Colour.HexCode3" Style="@($"color: {ColorFormViewModel.Colour.HexCode3};")" Placeholder="Select Color" />
+
+
+<div>
+	<MudButton @onclick="Save">Save</MudButton>
+	<MudButton @onclick="Cancel">Cancel</MudButton>
+</div>
+
+
+@code {
+
+	private void Save()
+	{
+		ColorFormViewModel.SaveColour();
+		NavigationManager.NavigateTo("/colours");
+
+	}
+
+	private void Cancel()
+	{
+		NavigationManager.NavigateTo("/colours");
+	}
+
+}

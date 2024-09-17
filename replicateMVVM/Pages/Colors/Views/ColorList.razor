@@ -1,0 +1,78 @@
+﻿@using MudBlazor
+@using System.Collections.ObjectModel
+@using replicateMVVM.Pages.Colors.Models
+@using replicateMVVM.Pages.Colors.ViewModels
+@inject NavigationManager NavigationManager
+@inject ColorListViewModel ColorListViewModel
+
+<h3>ColorList</h3>
+
+<MudDataGrid T="Colour" Items="Colours">
+    <Columns>
+        <PropertyColumn Property="x => x.Name"  />
+        <PropertyColumn Property="x => x.HexCode" />
+        <PropertyColumn Property="x => x.HexCode2" />
+        <PropertyColumn Property="x => x.HexCode3" />
+
+
+
+        <TemplateColumn>
+            <CellTemplate>
+                <MudButton Style="@( $"background-color: {context.Item.HexCode}" )">Color 1</MudButton>
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <CellTemplate>
+                <MudButton Style="@( $"background-color: {context.Item.HexCode2}" )">Color 2</MudButton>
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <CellTemplate>
+                <MudButton Style="@( $"background-color: {context.Item.HexCode3}" )">Color 3</MudButton>
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <CellTemplate>
+                <MudButton @onclick="()=>UpdateColorPalette(context.Item)">Update</MudButton>
+            </CellTemplate>
+        </TemplateColumn>
+
+
+    </Columns>
+</MudDataGrid>
+
+<MudButton @onclick= "CreateColorAction">Create Color Palette</MudButton>
+<MudButton @onclick="ColorPlay">Go to Color Playground</MudButton>
+
+@code {
+    [Parameter]
+    public Action CreateColorAction { get; set; }
+
+    [Parameter]
+    public Action<Colour> UpdateColorAction { get; set; }
+
+    [Parameter]
+    public ObservableCollection<Colour> Colours { get; set; } = new ObservableCollection<Colour>();
+
+    public void CreateColorPalette()
+    {
+        CreateColorAction.Invoke();
+    }
+
+    private void UpdateColorPalette(Colour colour)
+    {
+        UpdateColorAction.Invoke(colour);
+    }
+
+    private void ColorPlay()
+    {
+        NavigationManager.NavigateTo("/Playground");
+
+    }
+
+   
+
+}
